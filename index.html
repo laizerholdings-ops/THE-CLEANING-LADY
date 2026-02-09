@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cleaning Lady | Engineering Cleanliness Daily</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #020617;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* --- Custom Animations --- */
+        @keyframes ken-burns {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .animate-ken-burns { animation: ken-burns 30s ease-in-out infinite; }
+
+        @keyframes text-glow {
+            0%, 100% { filter: drop-shadow(0 0 2px rgba(135, 206, 235, 0.3)); }
+            50% { filter: drop-shadow(0 0 8px rgba(135, 206, 235, 0.6)); }
+        }
+        .animate-text-glow { animation: text-glow 4s ease-in-out infinite; }
+
+        @keyframes pulse-green {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        .whatsapp-pulse { animation: pulse-green 2s infinite; }
+
+        .text-shimmer {
+            background: linear-gradient(to right, #87CEEB 20%, #ffffff 40%, #ffffff 60%, #87CEEB 80%);
+            background-size: 200% auto;
+            color: #87CEEB;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 4s linear infinite;
+        }
+        @keyframes textShimmer { to { background-position: 200% center; } }
+
+        /* --- UI Components --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(135, 206, 235, 0.3);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #87CEEB; }
+
+        .faq-content {
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+        .faq-content.active {
+            max-height: 500px;
+            opacity: 1;
+            padding-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Background Layer -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <video autoplay muted loop playsinline class="w-full h-full object-cover animate-ken-burns">
+                <source src="background.mp4" type="video/mp4">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=1600" alt="Cleaning Grid" class="w-full h-full object-cover">
+            </video>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/60 to-slate-950 z-10"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-700 top-4 py-0">
+        <div class="max-w-7xl mx-auto px-4">
+            <div id="nav-container" class="flex justify-between items-center px-6 py-4 rounded-2xl border border-transparent transition-all duration-500 backdrop-blur-xl bg-transparent">
+                <div class="flex items-center space-x-3 group cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="w-10 h-10 bg-[#87CEEB] rounded-lg flex items-center justify-center text-[#000080] font-black shadow-lg transition-transform group-hover:scale-110 relative">
+                        CL
+                        <i data-lucide="sparkles" class="absolute -top-1 -right-1 w-4 h-4 text-[#FFD700]"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-lg tracking-tighter uppercase leading-none">THE CLEANING <span class="text-[#87CEEB]">LADY</span></span>
+                        <span class="text-[8px] font-bold tracking-[0.4em] uppercase opacity-70">Sparkling Resilience</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#home" class="text-[10px] font-black uppercase tracking-widest hover:text-[#87CEEB] transition-colors">Home</a>
+                    <a href="#service" class="text-[10px] font-black uppercase tracking-widest hover:text-[#87CEEB] transition-colors">Service</a>
+                    <a href="#about" class="text-[10px] font-black uppercase tracking-widest hover:text-[#87CEEB] transition-colors">About</a>
+                    <a href="#contacts" class="text-[10px] font-black uppercase tracking-widest hover:text-[#87CEEB] transition-colors">Contacts</a>
+                    <a href="tel:0814734346" class="px-6 py-3 bg-[#87CEEB] text-[#000080] rounded-xl font-black hover:brightness-110 transition-all shadow-lg uppercase text-[10px] tracking-widest active:scale-95">
+                        Dispatch: 081 473 4346
+                    </a>
+                </div>
+
+                <!-- Mobile Toggle -->
+                <button id="menu-toggle" class="lg:hidden text-white">
+                    <i data-lucide="menu" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden absolute top-20 left-4 right-4 bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-2xl lg:hidden">
+            <div class="flex flex-col space-y-5">
+                <a href="#home" class="mobile-link text-xs font-black uppercase tracking-widest text-white">Home</a>
+                <a href="#service" class="mobile-link text-xs font-black uppercase tracking-widest text-white">Service</a>
+                <a href="#about" class="mobile-link text-xs font-black uppercase tracking-widest text-white">About</a>
+                <a href="#contacts" class="mobile-link text-xs font-black uppercase tracking-widest text-white">Contacts</a>
+                <a href="tel:0814734346" class="bg-[#87CEEB] text-[#000080] py-4 rounded-xl font-black text-center uppercase text-xs tracking-widest flex items-center justify-center gap-3">
+                    <i data-lucide="phone" class="w-4 h-4"></i> Call Dispatch
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home (Hero) -->
+    <section id="home" class="min-h-screen flex items-center pt-24 overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8 text-center lg:text-left reveal">
+                <div class="inline-flex items-center space-x-2 px-4 py-2 bg-[#87CEEB]/10 border border-[#87CEEB]/20 rounded-full">
+                    <span class="w-2 h-2 bg-[#87CEEB] rounded-full animate-pulse"></span>
+                    <span class="text-[#87CEEB] text-[10px] font-black uppercase tracking-[0.3em]">South Africa's Premier Sanitization Unit</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
+                    Engineering <br />
+                    <span class="text-shimmer animate-text-glow">Cleanliness</span> <br />
+                    Daily.
+                </h1>
+                
+                <p class="text-lg md:text-xl max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed opacity-70">
+                    The Cleaning Lady is a multidisciplinary sanitization powerhouse. We provide high-impact cleaning solutions tailored for the unique South African landscape.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-6">
+                    <a href="tel:0814734346" class="px-10 py-5 bg-[#87CEEB] text-[#000080] font-black rounded-2xl shadow-2xl hover:scale-105 transition-all flex items-center justify-center uppercase tracking-widest text-xs">
+                        Book Dispatch <i data-lucide="phone" class="ml-3 w-4 h-4"></i>
+                    </a>
+                    <a href="https://wa.me/27814734346" class="px-10 py-5 glass-card font-black rounded-2xl border border-white/10 transition-all uppercase tracking-widest text-xs flex items-center justify-center hover:bg-white/5 active:scale-95">
+                        <svg viewBox="0 0 448 512" class="mr-2 w-5 h-5 text-emerald-500" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.4 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                        WhatsApp Unit
+                    </a>
+                </div>
+            </div>
+
+            <div class="hidden lg:block relative reveal" style="transition-delay: 200ms;">
+                <div class="relative z-10 rounded-[3.5rem] overflow-hidden shadow-2xl border border-white/10 transform rotate-3 hover:rotate-0 transition-all duration-1000 aspect-square group">
+                    <img src="https://images.unsplash.com/photo-1528740561666-dc2479dc08ab?auto=format&fit=crop&w=800&q=80" alt="Professional Cleaning" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[4000ms]" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                    <div class="absolute bottom-8 left-8 right-8">
+                        <p class="text-2xl font-black uppercase tracking-tighter text-white">Residential Logic</p>
+                        <p class="text-xs text-[#87CEEB] font-bold uppercase tracking-widest">Premium Sector Certified</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Section -->
+    <section id="service" class="py-24 relative bg-slate-900/20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center space-y-4 mb-24 reveal">
+                <h2 class="text-[#87CEEB] font-black tracking-[0.4em] uppercase text-[11px]">Technical Sanitization</h2>
+                <h3 class="text-5xl font-black tracking-tighter uppercase leading-tight">Strategic Solutions</h3>
+                <div class="w-24 h-2 bg-[#87CEEB] mx-auto rounded-full mt-4 opacity-50"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service Card 1 -->
+                <div class="glass-card p-10 rounded-[2.5rem] group flex flex-col border-l-4 border-l-[#87CEEB] reveal">
+                    <div class="w-14 h-14 bg-[#87CEEB] rounded-2xl flex items-center justify-center mb-8 text-[#000080] group-hover:rotate-12 transition-transform shadow-xl">
+                        <i data-lucide="home" class="w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-black mb-4 uppercase tracking-tighter leading-tight">Residential Logic</h4>
+                    <p class="mb-8 text-[11px] font-medium opacity-70 leading-relaxed flex-grow">High-standard sanitization for estates and private residences across Gauteng.</p>
+                    <div class="space-y-2 border-t border-white/5 pt-6">
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Deep Surface Scrub</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Invisible Germ Logic</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Pet-Safe Solutions</div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-10 rounded-[2.5rem] group flex flex-col border-l-4 border-l-[#87CEEB] reveal">
+                    <div class="w-14 h-14 bg-[#87CEEB] rounded-2xl flex items-center justify-center mb-8 text-[#000080] group-hover:rotate-12 transition-transform shadow-xl">
+                        <i data-lucide="building-2" class="w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-black mb-4 uppercase tracking-tighter leading-tight">Commercial Defense</h4>
+                    <p class="mb-8 text-[11px] font-medium opacity-70 leading-relaxed flex-grow">Professional-grade office and retail cleaning systems for high-traffic environments.</p>
+                    <div class="space-y-2 border-t border-white/5 pt-6">
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Industrial Vacuums</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Shift-Based Logistics</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> After-Hours Support</div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-10 rounded-[2.5rem] group flex flex-col border-l-4 border-l-[#87CEEB] reveal">
+                    <div class="w-14 h-14 bg-[#87CEEB] rounded-2xl flex items-center justify-center mb-8 text-[#000080] group-hover:rotate-12 transition-transform shadow-xl">
+                        <i data-lucide="droplets" class="w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-black mb-4 uppercase tracking-tighter leading-tight">Deep Clean Protocol</h4>
+                    <p class="mb-8 text-[11px] font-medium opacity-70 leading-relaxed flex-grow">Heavy-duty structural cleaning for kitchens, bathrooms, and high-risk areas.</p>
+                    <div class="space-y-2 border-t border-white/5 pt-6">
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Steam Extraction</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Sanitized Barriers</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Detail Engineering</div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-10 rounded-[2.5rem] group flex flex-col border-l-4 border-l-[#87CEEB] reveal">
+                    <div class="w-14 h-14 bg-[#87CEEB] rounded-2xl flex items-center justify-center mb-8 text-[#000080] group-hover:rotate-12 transition-transform shadow-xl">
+                        <i data-lucide="zap" class="w-8 h-8"></i>
+                    </div>
+                    <h4 class="text-xl font-black mb-4 uppercase tracking-tighter leading-tight">Specialized Units</h4>
+                    <p class="mb-8 text-[11px] font-medium opacity-70 leading-relaxed flex-grow">Post-construction and event-ready deployments for immediate resilience.</p>
+                    <div class="space-y-2 border-t border-white/5 pt-6">
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Rubble Removal</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Glass Polish Logic</div>
+                        <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest"><div class="w-1.5 h-1.5 bg-[#87CEEB] rounded-full"></div> Vetted Response Units</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 relative bg-slate-950/40 reveal">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-8">
+                    <div class="space-y-4">
+                        <h2 class="text-[#87CEEB] font-black tracking-[0.4em] uppercase text-[11px]">Corporate Profile</h2>
+                        <h3 class="text-5xl font-black uppercase tracking-tighter leading-none">The Genesis <br /> & The Vision.</h3>
+                    </div>
+                    <div class="space-y-6 text-sm font-medium opacity-70 leading-relaxed">
+                        <p>Founded on the principle that cleanliness is the bedrock of productivity and wellness, <strong>The Cleaning Lady</strong> has established itself as a premier security-standard sanitization partner in South Africa. We operate on a core philosophy: that an environment's health directly impacts its resilience.</p>
+                        <p>What started as a boutique residential service has evolved into a multidisciplinary cleaning powerhouse, serving the high-risk and high-standard sectors of Gauteng and beyond. We don't just "clean"—we engineer sanctuaries.</p>
+                        <p>Our team specializes in complex, high-traffic environments where hygiene is non-negotiable. From luxury Boksburg estates to corporate Germiston logistics centers, we apply rigorous engineering standards to every deployment.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 pt-6">
+                        <div class="p-6 glass-card rounded-3xl border-l-4 border-[#87CEEB]">
+                           <i data-lucide="users" class="text-[#87CEEB] mb-2 w-6 h-6"></i>
+                           <h4 class="font-black uppercase text-[10px] tracking-widest">Vetted Staff</h4>
+                           <p class="text-[9px] opacity-50 mt-2">100% background-checked professional units.</p>
+                        </div>
+                        <div class="p-6 glass-card rounded-3xl border-l-4 border-emerald-500">
+                           <i data-lucide="award" class="text-emerald-500 mb-2 w-6 h-6"></i>
+                           <h4 class="font-black uppercase text-[10px] tracking-widest">Certified Ops</h4>
+                           <p class="text-[9px] opacity-50 mt-2">SANS-compliant chemical handling protocols.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-10">
+                    <div class="glass-card p-10 rounded-[3rem] border border-white/5 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:rotate-12 transition-transform">
+                            <i data-lucide="target" class="w-[120px] h-[120px]"></i>
+                        </div>
+                        <h4 class="text-2xl font-black uppercase tracking-tighter mb-6 text-[#FFD700]">Our Strategic Mission</h4>
+                        <p class="text-sm opacity-80 leading-relaxed italic">"To modernize the South African cleaning industry through technical precision, unwavering reliability, and the provision of comfortable, sanitized spaces that empower our clients to thrive."</p>
+                    </div>
+
+                    <div class="glass-card p-10 rounded-[3rem] border border-white/5 relative">
+                        <h4 class="text-2xl font-black uppercase tracking-tighter mb-6 text-[#87CEEB]">The Standard</h4>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <i data-lucide="check-circle" class="text-[#87CEEB] shrink-0 w-5 h-5"></i>
+                                <div>
+                                    <h5 class="font-black uppercase text-xs">Quality Engineering</h5>
+                                    <p class="text-[11px] opacity-60">Every surface undergoes a 12-point quality verification protocol.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <i data-lucide="check-circle" class="text-[#87CEEB] shrink-0 w-5 h-5"></i>
+                                <div>
+                                    <h5 class="font-black uppercase text-xs">Sustainability Logic</h5>
+                                    <p class="text-[11px] opacity-60">Prioritizing eco-friendly logistics to protect both environment and asset.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <i data-lucide="check-circle" class="text-[#87CEEB] shrink-0 w-5 h-5"></i>
+                                <div>
+                                    <h5 class="font-black uppercase text-xs">Client Resilience</h5>
+                                    <p class="text-[11px] opacity-60">Saving you time so you can focus on high-impact daily operations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacts Section -->
+    <footer id="contacts" class="py-24 relative bg-slate-950 border-t border-white/5 reveal">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="space-y-12 text-center lg:text-left">
+                    <div class="space-y-4">
+                        <h2 class="text-[#87CEEB] font-black tracking-[0.4em] uppercase text-[11px]">Ready for Transmission</h2>
+                        <h3 class="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.8]">
+                            Fortify <br />
+                            <span class="text-[#87CEEB] text-shimmer animate-text-glow">Your Comfort.</span> <br />
+                            Immediately.
+                        </h3>
+                    </div>
+                    
+                    <div class="space-y-8 max-w-md mx-auto lg:mx-0 text-left">
+                        <div class="flex items-center space-x-6 group cursor-pointer" onclick="window.location.href='tel:0814734346'">
+                            <div class="w-16 h-16 glass-card rounded-2xl flex items-center justify-center text-[#87CEEB] group-hover:bg-[#87CEEB] group-hover:text-[#000080] transition-all shadow-xl">
+                                <i data-lucide="phone" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase mb-1 opacity-50">Hotline Protocol</p>
+                                <p class="text-2xl font-black leading-none tracking-tighter">081 473 4346</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 group cursor-pointer" onclick="window.location.href='https://wa.me/27814734346'">
+                            <div class="w-16 h-16 glass-card rounded-2xl flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all shadow-xl">
+                                <svg viewBox="0 0 448 512" class="w-6 h-6" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.4 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase mb-1 opacity-50">WhatsApp Logic</p>
+                                <p class="text-2xl font-black leading-none tracking-tighter">Instant Dispatch</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-12 rounded-[2.5rem] shadow-2xl border border-white/10">
+                    <form action="https://formspree.io/f/mgvleedr" method="POST" class="space-y-6">
+                        <h4 class="text-3xl font-black mb-8 uppercase tracking-tighter text-center lg:text-left">Secure Consultation</h4>
+                        <div class="space-y-4">
+                            <input type="text" name="name" placeholder="Full Client Name" class="w-full glass-card bg-white/5 border-none rounded-xl p-5 outline-none focus:ring-2 focus:ring-[#87CEEB] text-sm text-white" required />
+                            <input type="tel" name="phone" placeholder="Contact Protocol (Phone Number)" class="w-full glass-card bg-white/5 border-none rounded-xl p-5 outline-none focus:ring-2 focus:ring-[#87CEEB] text-sm text-white" required />
+                            <select name="focus" class="w-full glass-card bg-slate-900 border-none rounded-xl p-5 outline-none focus:ring-2 focus:ring-[#87CEEB] text-sm text-white appearance-none">
+                                <option value="" disabled selected>Primary Cleaning Focus</option>
+                                <option value="residential">Residential Logic</option>
+                                <option value="commercial">Commercial Unit</option>
+                                <option value="deep">Deep Clean Protocol</option>
+                            </select>
+                            <textarea name="message" placeholder="Technical Requirements & Message" rows="3" class="w-full glass-card bg-white/5 border-none rounded-xl p-5 outline-none focus:ring-2 focus:ring-[#87CEEB] text-sm text-white"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-[#87CEEB] text-[#000080] font-black py-6 rounded-2xl shadow-2xl hover:brightness-110 transition-all uppercase tracking-[0.3em] text-xs">Transmit To Unit</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-[10px] font-medium opacity-50 uppercase tracking-widest text-center">
+                <p>© 2026 THE CLEANING LADY HOLDINGS. ALL RIGHTS RESERVED.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                   <span class="text-[#87CEEB]">Secure</span>
+                   <span>•</span>
+                   <span className="text-[#87CEEB]">Reliable</span>
+                   <span>•</span>
+                   <span className="text-[#87CEEB]">Certified</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Official WhatsApp FAB -->
+    <a href="https://wa.me/27814734346" target="_blank" rel="noopener noreferrer" class="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all whatsapp-pulse">
+        <svg viewBox="0 0 448 512" class="w-8 h-8" fill="currentColor"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.4 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+    </a>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Navbar Scroll Logic
+        const navbar = document.getElementById('navbar');
+        const navContainer = document.getElementById('nav-container');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.remove('top-4');
+                navbar.classList.add('top-0');
+                navContainer.classList.add('bg-slate-900/95', 'border-white/10', 'shadow-2xl');
+                navContainer.classList.remove('bg-transparent', 'border-transparent');
+            } else {
+                navbar.classList.add('top-4');
+                navbar.classList.remove('top-0');
+                navContainer.classList.remove('bg-slate-900/95', 'border-white/10', 'shadow-2xl');
+                navContainer.classList.add('bg-transparent', 'border-transparent');
+            }
+        });
+
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuToggle.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                menuToggle.innerHTML = '<i data-lucide="x"></i>';
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuToggle.innerHTML = '<i data-lucide="menu"></i>';
+            }
+            lucide.createIcons();
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuToggle.innerHTML = '<i data-lucide="menu"></i>';
+                lucide.createIcons();
+            });
+        });
+
+        // Reveal Animation Observer
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>
